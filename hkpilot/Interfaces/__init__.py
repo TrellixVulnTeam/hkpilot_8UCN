@@ -1,3 +1,0 @@
-"""
-   hkpilot.Interfaces package
-"""
