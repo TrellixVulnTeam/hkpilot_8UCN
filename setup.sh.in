@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 export HK_PILOT_DIR=@HK_PILOT_DIR@
+export HK_WORK_DIR=@HK_PILOT_DIR@/..
 
 export HK_PILOT_GCC_VERSION=@GCC_VERSION@
 export HK_PILOT_OS=@OS@

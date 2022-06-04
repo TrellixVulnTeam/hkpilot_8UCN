@@ -26,7 +26,7 @@ def print_hi():
 
 
 def install_package(args):
-    a_path = args.path
+    a_path = os.path.join(os.environ.get("HK_WORK_DIR"), args.path)
     logger.info(f"Installing {a_path}")
     install_module_file = find_install_script(a_path)
     if install_module_file:
@@ -35,13 +35,11 @@ def install_package(args):
     print(install_obj.path)
     logger.info(f"Test {a_path}")
     install_obj.print()
-    print(args.download)
-    if args.download:
-        logger.info("Downloading package...")
-        if not install_obj.download():
-            logger.fatal("Error while downloading!")
-            exit(1)
+    if not install_obj.download_source():
+        logger.fatal("Error while downloading!")
+        exit(1)
     install_obj.configure()
+    install_obj.install()
     return True
 
 
@@ -60,7 +58,6 @@ def main():
 
     parser_install = sub_parsers.add_parser('install', help='Install a package')
     parser_install.add_argument('path', type=str, help='Package name/location')
-    parser_install.add_argument('--download', action='store_true', help='Download package before installation')
     parser_install.set_defaults(func=install_package)
 
     args = parser.parse_args()
