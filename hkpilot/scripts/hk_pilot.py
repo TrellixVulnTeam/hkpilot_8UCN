@@ -13,20 +13,6 @@ logger = getLogger("hk-install")
 import argparse
 
 
-def print_hi():
-    a_cmake = CMake("hk-eventDisplay", "/Users/mguigue/Work/T2K/HK/Software/newSystem/hk-eventDisplay")
-    print(f'Hi, {a_cmake.package_name}')
-
-    if not a_cmake.configure():
-        print("Error")
-
-    if not a_cmake.build():
-        print("Error")
-
-    if not a_cmake.install():
-        print("Error")
-
-
 def install_package(args):
     a_path = os.path.join(os.environ.get("HK_WORK_DIR"), args.name)
     logger.info(f"Installing {a_path}")
