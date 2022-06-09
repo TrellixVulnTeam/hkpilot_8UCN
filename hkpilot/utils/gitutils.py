@@ -8,6 +8,7 @@ from git.exc import GitCommandError
 
 
 def clone(git_url, path):
+    logger.debug(f"Cloning {git_url} in {path}")
     try:
         repo = Repo.clone_from(git_url, path)
     except GitCommandError as error:

@@ -2,6 +2,7 @@ from hkpilot.utils import fancylogger
 from hkpilot.utils.buildtools import BuildTools
 from hkpilot.utils.files import mkdir
 
+import multiprocessing
 import subprocess
 import os
 
@@ -25,6 +26,7 @@ class CMake(BuildTools):
             self._build_folder = os.path.join(self._path, "build")
             self._install_folder = os.path.join(self._path, "install")
         self._cmakelist_path = ""
+        self._cmake_options = dict()  # dictionary containing cmake options
 
     def configure(self):
         logger.info(f"Configuration of {self._package_name} in progress...")
@@ -55,7 +57,9 @@ class CMake(BuildTools):
     def build(self):
         logger.info(f"Build of {self._package_name} in progress...")
 
-        cmake_cmd = f"cmake --build {self._build_folder}"
+        if self.n_procs == 0:
+            self.n_procs = multiprocessing.cpu_count()
+        cmake_cmd = f"cmake --build {self._build_folder} -j {self.n_procs}"
         logger.debug(f"Running <{cmake_cmd}>")
         ret_code = subprocess.check_call([cmake_cmd], stderr=subprocess.STDOUT, shell=True)
         if ret_code == 0:
@@ -67,7 +71,7 @@ class CMake(BuildTools):
     def install(self):
         logger.info(f"Installation of {self._package_name} in progress...")
 
-        cmake_cmd = f"cmake --build {self._build_folder} --target install"
+        cmake_cmd = f"cmake --build {self._build_folder} --target install -j {self.n_procs}"
         logger.debug(f"Running <{cmake_cmd}>")
         ret_code = subprocess.check_call([cmake_cmd], stderr=subprocess.STDOUT, shell=True)
         if ret_code == 0:

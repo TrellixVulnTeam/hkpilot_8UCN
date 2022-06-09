@@ -1,0 +1,15 @@
+repos:
+  NEUT: git@github.com:hyperk/NEUT.git
+  NGen: git@github.com:hyperk/NGen.git
+  Geant4: git@github.com:hyperk/Geant4.git
+  WCSim: git@github.com:WCSim/WCSim.git
+  fiTQun: git@github.com:hyperk/fiTQun.git
+  hk-BONSAI: git@github.com:hyperk/hk-BONSAI.git
+  hk-utils: git@github.com:hyperk/hk-utils.git
+  hk-eventDisplay: git@github.com:hyperk/hk-eventDisplay.git
+  hk-simpleFitter: git@github.com:hyperk/hk-simpleFitter.git
+  Prob3: git@github.com:hyperk/Prob3.git
+  FLOWER: git@github.com:HKDAQ/FLOWER.git
+  sntools: git@github.com:JostMigenda/sntools.git
+  TriggerApplication: git@github.com:HKDAQ/TriggerApplication.git
+  zeromq: git@github.com:guiguem/zeromq.git

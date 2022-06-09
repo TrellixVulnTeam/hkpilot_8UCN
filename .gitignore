@@ -1,5 +1,6 @@
 build
+dist
+install
 hkpilot.egg-info
 setup.sh
-install
 .idea
