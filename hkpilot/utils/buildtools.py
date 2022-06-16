@@ -24,6 +24,7 @@ class BuildTools(object):
         self._download_url = None
         self._git_branch = None
         self._git_tag = None
+        self._repo = None # Git repository
         self._n_procs = 0
         self._externals_src_dir = None
         self._depends_on = dict() # dictionary containing the dependencies of the package

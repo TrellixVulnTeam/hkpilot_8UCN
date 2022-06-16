@@ -13,10 +13,6 @@ class CMake(BuildTools):
 
     def __init__(self, path):
         super().__init__(path)
-        # self._git_branch_tag = None
-        # self._git_clone_dir = None
-        # self._git_url = None
-        self._repo = None
         self._type = "CMake"
         if self._hk_system != "":
             self._build_folder = os.path.join(self._path, f"build-{self._hk_system}")
@@ -36,8 +32,8 @@ class CMake(BuildTools):
             logger.error(f"Cannot find CMakeLists.txt in {cmakelist_location}")
             return False
 
-        mkdir(self._build_folder)  # TODO make nicer (using os path and gcc version)
-        mkdir(self._install_folder)  # TODO make nicer (using os path and gcc version)
+        mkdir(self._build_folder)
+        mkdir(self._install_folder)
         if "CMAKE_INSTALL_PREFIX" in self._cmake_options:
             logger.warn(f"CMAKE_INSTALL_PREFIX already defined as {self._cmake_options['CMAKE_INSTALL_PREFIX']}")
             logger.warn("Are you sure you know what you do?")

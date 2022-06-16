@@ -8,7 +8,7 @@ from hkpilot.utils.gitutils import clone
 
 from hkpilot.utils.fancylogger import getLogger
 
-logger = getLogger("hk-install")
+logger = getLogger("hk-pilot")
 
 import argparse
 
@@ -70,7 +70,7 @@ def main():
         logger.fatal("Cannot find env variable HK_SYSTEM: please source hkpilot/setup.sh; exiting...")
         exit(1)
 
-    parser = argparse.ArgumentParser(prog='hk-install')
+    parser = argparse.ArgumentParser(prog='hk-pilot')
     parser.add_argument('--version', action='store_true', help='Print version')
     parser.add_argument('--system', action='store_true', help='Print system path')
 
