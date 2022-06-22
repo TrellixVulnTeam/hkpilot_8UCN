@@ -23,7 +23,8 @@ endif( NOT EXISTS ${VERSION_FILE} )
 file( READ ${VERSION_FILE} VERSION_STRING )
 
 # Parse the version string into a list
-separate_arguments( VERSION_LIST UNIX_COMMAND ${VERSION_STRING} )
+string( REPLACE "." " " VERSION_SPACE_STRING ${VERSION_STRING} )
+separate_arguments( VERSION_LIST UNIX_COMMAND ${VERSION_SPACE_STRING} )
 
 # Put the version numbers into separate variables
 list( GET VERSION_LIST 0 PROJECT_VERSION_MAJOR )
