@@ -2,7 +2,7 @@ include(PackageBuilder)
 
 function( hkbuilder_prepare_project )
 
-    MESSAGE("Preparing project ${PROJECT_NAME} version ${PROJECT_VERSION}" )
+
 
     set(default_build_type "Release")
     if (NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)

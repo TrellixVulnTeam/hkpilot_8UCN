@@ -140,32 +140,32 @@ pbuilder_expand_lib_name( ${PROJECT_NAME} )
 set( ${PROJECT_NAME}_FULL_PROJECT_NAME ${FULL_LIB_NAME} )
 message( STATUS "Full project name: ${PROJECT_NAME}_FULL_PROJECT_NAME = ${${PROJECT_NAME}_FULL_PROJECT_NAME}" )
 
-# if git is used, get the commit SHA1
-find_package( Git )
-if( GIT_FOUND )
-    # check whether this is a git repo
-    execute_process( COMMAND ${GIT_EXECUTABLE} rev-parse --is-inside-git-dir WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE IS_GIT_REPO )
-    if( IS_GIT_REPO )
-        execute_process( COMMAND ${GIT_EXECUTABLE} rev-parse -q HEAD  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE ${PROJECT_NAME}_GIT_COMMIT  OUTPUT_STRIP_TRAILING_WHITESPACE )
-        execute_process( COMMAND ${GIT_EXECUTABLE} describe --tags --long  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE ${PROJECT_NAME}_GIT_DESCRIBE  OUTPUT_STRIP_TRAILING_WHITESPACE )
-        execute_process( COMMAND ${GIT_EXECUTABLE} remote get-url origin WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE GIT_ORIGIN OUTPUT_STRIP_TRAILING_WHITESPACE )
-        if( GIT_ORIGIN )
-            message( STATUS "Git origin: ${GIT_ORIGIN}")
-            string( REGEX MATCH "[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$" GIT_PACKAGE ${GIT_ORIGIN} )
-        else( GIT_ORIGIN )
-            execute_process( COMMAND ${GIT_EXECUTABLE} rev-parse --show-toplevel WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE TOP_DIR OUTPUT_STRIP_TRAILING_WHITESPACE )
-            execute_process( COMMAND basename ${TOP_DIR} OUTPUT_VARIABLE GIT_PACKAGE )
-        endif( GIT_ORIGIN )
-        message( STATUS "Git package: ${GIT_PACKAGE}" )
-
-        # override package name with git package
-        set( ${PROJECT_NAME}_PACKAGE_NAME "${GIT_PACKAGE}" )
-    endif( IS_GIT_REPO )
-endif( GIT_FOUND )
-# check if we set the _PACKAGE_NAME variable; if we didn't, then we'll use an alternate setting
-if( NOT ${PROJECT_NAME}_PACKAGE_NAME )
-    set( ${PROJECT_NAME}_PACKAGE_NAME "${PROJECT_NAME}" )
-endif()
+## if git is used, get the commit SHA1
+#find_package( Git )
+#if( GIT_FOUND )
+#    # check whether this is a git repo
+#    execute_process( COMMAND ${GIT_EXECUTABLE} rev-parse --is-inside-git-dir WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE IS_GIT_REPO )
+#    if( IS_GIT_REPO )
+#        execute_process( COMMAND ${GIT_EXECUTABLE} rev-parse -q HEAD  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE ${PROJECT_NAME}_GIT_COMMIT  OUTPUT_STRIP_TRAILING_WHITESPACE )
+#        execute_process( COMMAND ${GIT_EXECUTABLE} describe --tags --long  WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE ${PROJECT_NAME}_GIT_DESCRIBE  OUTPUT_STRIP_TRAILING_WHITESPACE )
+#        execute_process( COMMAND ${GIT_EXECUTABLE} remote get-url origin WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE GIT_ORIGIN OUTPUT_STRIP_TRAILING_WHITESPACE )
+#        if( GIT_ORIGIN )
+#            message( STATUS "Git origin: ${GIT_ORIGIN}")
+#            string( REGEX MATCH "[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$" GIT_PACKAGE ${GIT_ORIGIN} )
+#        else( GIT_ORIGIN )
+#            execute_process( COMMAND ${GIT_EXECUTABLE} rev-parse --show-toplevel WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} OUTPUT_VARIABLE TOP_DIR OUTPUT_STRIP_TRAILING_WHITESPACE )
+#            execute_process( COMMAND basename ${TOP_DIR} OUTPUT_VARIABLE GIT_PACKAGE )
+#        endif( GIT_ORIGIN )
+#        message( STATUS "Git package: ${GIT_PACKAGE}" )
+#
+#        # override package name with git package
+#        set( ${PROJECT_NAME}_PACKAGE_NAME "${GIT_PACKAGE}" )
+#    endif( IS_GIT_REPO )
+#endif( GIT_FOUND )
+## check if we set the _PACKAGE_NAME variable; if we didn't, then we'll use an alternate setting
+#if( NOT ${PROJECT_NAME}_PACKAGE_NAME )
+#    set( ${PROJECT_NAME}_PACKAGE_NAME "${PROJECT_NAME}" )
+#endif()
 
 # define the variables to describe the package (will go in the [ProjectName]Config.hh file)
 set( ${PROJECT_NAME}_PACKAGE_STRING "${PROJECT_NAME} ${${PROJECT_NAME}_VERSION}" )
