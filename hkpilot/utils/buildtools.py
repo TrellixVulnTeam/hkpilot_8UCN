@@ -20,6 +20,13 @@ class BuildTools(object):
         else:
             logger.warn("HK_SYSTEM variable not provided!")
             self._hk_system = ""
+        if self._hk_system != "":
+            self._build_folder = os.path.join(self._path, f"build-{self._hk_system}")
+            self._install_folder = os.path.join(self._path, f"install-{self._hk_system}")
+        else:
+            logger.warn("Using default folder pattern!")
+            self._build_folder = os.path.join(self._path, "build")
+            self._install_folder = os.path.join(self._path, "install")
         self._git_url = None
         self._download_url = None
         self._git_branch = None

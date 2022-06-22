@@ -14,13 +14,6 @@ class CMake(BuildTools):
     def __init__(self, path):
         super().__init__(path)
         self._type = "CMake"
-        if self._hk_system != "":
-            self._build_folder = os.path.join(self._path, f"build-{self._hk_system}")
-            self._install_folder = os.path.join(self._path, f"install-{self._hk_system}")
-        else:
-            logger.warn("Using default folder pattern!")
-            self._build_folder = os.path.join(self._path, "build")
-            self._install_folder = os.path.join(self._path, "install")
         self._cmakelist_path = ""
         self._cmake_options = dict()  # dictionary containing cmake options
 

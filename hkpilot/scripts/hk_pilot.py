@@ -48,10 +48,10 @@ def clean_package(args):
         shutil.rmtree(os.path.join(a_path, os.environ.get("HK_PILOT_BUILD_PATTERN")))
     except FileNotFoundError:
         logger.warn("No build folder to remove")
-    try:
-        shutil.rmtree(os.path.join(a_path, "src"))
-    except FileNotFoundError:
-        logger.warn("No src folder to remove")
+    # try:
+    #     shutil.rmtree(os.path.join(a_path, "src"))
+    # except FileNotFoundError:
+    #     logger.warn("No src folder to remove")
     try:
         shutil.rmtree(os.path.join(a_path, "tar"))
     except FileNotFoundError:
