@@ -52,9 +52,9 @@ class CMake(BuildTools):
         logger.debug(f"Running <{cmake_cmd}>")
         ret_code = subprocess.check_call([cmake_cmd], stderr=subprocess.STDOUT, shell=True)
         if ret_code == 0:
-            logger.info(f"Configuration of {self._package_name} done successfully")
+            logger.info(f"Build of {self._package_name} done successfully")
             return True
-        logger.error(f"Configuration of {self._package_name} failed!")
+        logger.error(f"Build of {self._package_name} failed!")
         return False
 
     def install(self):
