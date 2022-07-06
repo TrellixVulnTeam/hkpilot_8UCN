@@ -44,6 +44,10 @@ class BuildTools(object):
     External sources: {self.has_external_sources}"
         if self._git_url:
             log_string += f"\n    Git URL: {self._git_url}"
+        if len(self._depends_on.items()) > 0:
+            log_string += f"\n    Depends on:"
+            for key, value in self._depends_on.items():
+                log_string += f"\n    -> {key}: {value}"
         logger.info(log_string)
 
     @property
@@ -75,6 +79,9 @@ class BuildTools(object):
     @property
     def package_version(self):
         return self._package_version
+
+    def check_dependencies(self):
+        return True
 
     def download_source(self):
         if not self.has_external_sources:

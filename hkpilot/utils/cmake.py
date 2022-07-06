@@ -1,6 +1,6 @@
 from hkpilot.utils import fancylogger
 from hkpilot.utils.buildtools import BuildTools
-from hkpilot.utils.files import mkdir
+from hkpilot.utils.files import mkdir, read_dependencies_file
 
 import multiprocessing
 import subprocess
@@ -16,6 +16,10 @@ class CMake(BuildTools):
         self._type = "CMake"
         self._cmakelist_path = ""
         self._cmake_options = dict()  # dictionary containing cmake options
+
+    def check_dependencies(self):
+        self._depends_on.update(read_dependencies_file(os.path.join(self._path, self._cmakelist_path)))
+        return True
 
     def configure(self):
         logger.info(f"Configuration of {self._package_name} in progress...")
@@ -36,12 +40,16 @@ class CMake(BuildTools):
         for key, value in self._cmake_options.items():
             cmake_cmd += f" -D{key}={value}"
         logger.debug(f"Running <{cmake_cmd}>")
-        ret_code = subprocess.check_call([cmake_cmd], stderr=subprocess.STDOUT, shell=True)
-        if ret_code == 0:
-            logger.info(f"Configuration of {self._package_name} done successfully")
-            return True
-        logger.error(f"Configuration of {self._package_name} failed!")
-        return False
+        try:
+            ret_code = subprocess.check_call([cmake_cmd], stderr=subprocess.STDOUT, shell=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Configuration of {self._package_name} failed!")
+            return False
+        if ret_code != 0:
+            logger.error(f"Configuration of {self._package_name} failed!")
+            return False
+        logger.info(f"Configuration of {self._package_name} done successfully")
+        return True
 
     def build(self):
         logger.info(f"Build of {self._package_name} in progress...")
@@ -62,9 +70,13 @@ class CMake(BuildTools):
 
         cmake_cmd = f"cmake --build {self._build_folder} --target install -j {self.n_procs}"
         logger.debug(f"Running <{cmake_cmd}>")
-        ret_code = subprocess.check_call([cmake_cmd], stderr=subprocess.STDOUT, shell=True)
-        if ret_code == 0:
-            logger.info(f"Installation of {self._package_name} done successfully")
-            return True
-        logger.error(f"Installation of {self._package_name} failed!")
-        return False
+        try:
+            ret_code = subprocess.check_call([cmake_cmd], stderr=subprocess.STDOUT, shell=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Installation of {self._package_name} failed!")
+            return False
+        if ret_code != 0:
+            logger.error(f"Installation of {self._package_name} failed!")
+            return False
+        logger.info(f"Installation of {self._package_name} done successfully")
+        return True

@@ -27,7 +27,7 @@ def find_install_script(path):
     return os.path.join(path, "hkinstall.py")
 
 
-def get_class(file):
+def get_install_class(file):
     import imp
     foo = imp.load_source('module', file)
 
@@ -71,6 +71,34 @@ def unzip(path_to_zip_file, where_to_unzip):
     if not os.path.exists(where_to_unzip):
         logger.warning("Directory where to unzip doesn't exist, creating it!")
         mkdir(where_to_unzip)
-        # exit(1)
     with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
         zip_ref.extractall(where_to_unzip)
+
+
+def read_dependencies_file(path):
+    if not os.path.exists(path):
+        logger.fatal(f"Dependency path <{path}> doesn't exist; exiting!")
+        exit(1)
+    if not os.path.exists(os.path.join(path, "dependencies.cmake")):
+        logger.warn(f"Cannot find dependencies.cmake in <{path}>; skipping...")
+        return dict()
+    file_path = os.path.join(path, "dependencies.cmake")
+    a_dict = dict()
+    with open(file_path, "r") as file:
+        for line in file:
+            if line.startswith("#"):
+                logger.debug(f"Skipping line {line}")
+                continue
+            if not "hk_package" in line:
+                logger.warn(f"Skipping {line}")
+                logger.warn("Make sure the line is 'hk_package( <package_name> <package_version>)'")
+                continue
+            a_list = line[line.find("(")+len("("):line.rfind(")")].split()
+            if len(a_list) < 2:
+                logger.warn("Not enough arguments in line")
+                logger.warn("Make sure the line is 'hk_package( <package_name> <package_version>)'")
+                continue
+            logger.info(f"Requires {str(a_list[0])} ({str(a_list[1])})")
+            a_dict.update({str(a_list[0]): str(a_list[1])})
+    return a_dict
+

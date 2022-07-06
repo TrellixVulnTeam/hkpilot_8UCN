@@ -53,21 +53,28 @@ if( GIT_FOUND )
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 OUTPUT_VARIABLE ${PROJECT_NAME}_GIT_COMMIT_TAG ERROR_QUIET)
         execute_process(
+                COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+                OUTPUT_VARIABLE ${PROJECT_NAME}_GIT_COMMIT)
+
+        execute_process(
                 COMMAND ${GIT_EXECUTABLE} rev-parse --abbrev-ref HEAD
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 OUTPUT_VARIABLE ${PROJECT_NAME}_GIT_BRANCH)
 
         string(STRIP "${${PROJECT_NAME}_GIT_REV}" ${PROJECT_NAME}_GIT_REV)
+        string(STRIP "${${PROJECT_NAME}_GIT_COMMIT_TAG}" ${PROJECT_NAME}_GIT_COMMIT_TAG)
+        string(STRIP "${${PROJECT_NAME}_GIT_COMMIT}" ${PROJECT_NAME}_GIT_COMMIT)
         string(SUBSTRING "${GIT_REV}" 1 7 GIT_REV)
         string(STRIP "${${PROJECT_NAME}_GIT_DIFF}" GIT_DIFF)
         string(STRIP "${${PROJECT_NAME}_GIT_BRANCH}" ${PROJECT_NAME}_GIT_BRANCH)
         message( STATUS "Git branch: ${${PROJECT_NAME}_GIT_BRANCH}" )
     endif()
     if ( ${PROJECT_NAME}_GIT_COMMIT_TAG)
-        message(STATUS "Commit XX is a tag: ${${PROJECT_NAME}_GIT_COMMIT_TAG}")
+        message(STATUS "Commit ${${PROJECT_NAME}_GIT_COMMIT} is a tag: ${${PROJECT_NAME}_GIT_COMMIT_TAG}")
         string(STRIP "${${PROJECT_NAME}_GIT_COMMIT_TAG}" PROJECT_VERSION)
     else()
-        message(STATUS "Commit XX is not a tag; grabbing the most recent one on branch")
+        message(STATUS "Commit ${${PROJECT_NAME}_GIT_COMMIT} is not a tag; grabbing the most recent one on branch")
         execute_process(
                 COMMAND ${GIT_EXECUTABLE} describe --tags --abbrev=0
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
