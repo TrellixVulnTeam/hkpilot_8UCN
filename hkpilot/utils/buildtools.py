@@ -1,7 +1,7 @@
 import os
 from hkpilot.utils.fancylogger import getLogger
 from hkpilot.utils.files import download, mkdir, unzip
-from hkpilot.utils.gitutils import checkout_tag, checkout_branch, clone
+from hkpilot.utils.gitutils import checkout_tag, checkout_branch, clone, find_commit_info
 
 logger = getLogger(__name__)
 
@@ -11,9 +11,9 @@ class BuildTools(object):
     def __init__(self, path):
         self._type = "default"
         self._package_name = ""
-        self._package_version = None
         if path != "":
             self._path = path
+        self._package_version, self._git_commit_ahead, self._git_commit_hash = find_commit_info(self._path)
 
         if os.environ.get("HK_SYSTEM"):
             self._hk_system = os.environ.get("HK_SYSTEM")
@@ -37,10 +37,11 @@ class BuildTools(object):
         self._depends_on = dict() # dictionary containing the dependencies of the package
 
     def print(self):
-        log_string = f"Package details:\n\
-    Name: {self._package_name}\n\
-    Version: {self._package_version}\n\
-    Installation type: {self._type}\n\
+        log_string = f"\
+    Package details:\n\
+    Name: {self.package_name}\n\
+    Version: {self.package_version} ({self._git_commit_ahead} ~ {self._git_commit_hash})\n\
+    Installation type: {self.type}\n\
     External sources: {self.has_external_sources}"
         if self._git_url:
             log_string += f"\n    Git URL: {self._git_url}"
@@ -78,7 +79,9 @@ class BuildTools(object):
 
     @property
     def package_version(self):
-        return self._package_version
+        if self._package_version:
+            return self._package_version
+        print(find_tag(self._path))
 
     def check_dependencies(self):
         return True
@@ -99,7 +102,13 @@ class BuildTools(object):
         elif self._download_url:
             if not os.path.exists(os.path.join(self._path, "tar")):
                 mkdir(os.path.join(self._path, "tar"))
-            file = os.path.join(self._path, f"tar/{self.package_name}_{self.package_version}.zip")
+            if self._download_url.endswith(".zip"):
+                file = os.path.join(self._path, f"tar/{self.package_name}_{self.package_version}.zip")
+            elif self._download_url.endswith(".tar.gz"):
+                file = os.path.join(self._path, f"tar/{self.package_name}_{self.package_version}.tar.gz")
+            else:
+                logger.fatal(f"Unknown extension of URL: {self._download_url}; should be .zip or .tar.gz")
+                exit(1)
             download(self._download_url, file)
             unzip(file, os.path.join(self._path, self._externals_src_dir))
             # logger.fatal("Not implemented yet!")

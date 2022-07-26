@@ -39,6 +39,10 @@ class CMake(BuildTools):
         cmake_cmd = f"cmake -S {cmakelist_location} -B {self._build_folder}"
         for key, value in self._cmake_options.items():
             cmake_cmd += f" -D{key}={value}"
+        # if special dependencies, cmake could not find the XXXConfig.cmake file -> Add them manually by the command line
+        for key, _ in self._depends_on.items():
+            if key.lowercase() == "root":
+                cmake_cmd += f" -D{key}_DIR={os.environ.get('HK_WORK_DIR')}/{key}/install-{os.environ.get('HK_SYSTEM')}/cmake"
         logger.debug(f"Running <{cmake_cmd}>")
         try:
             ret_code = subprocess.check_call([cmake_cmd], stderr=subprocess.STDOUT, shell=True)

@@ -5,8 +5,8 @@
 From this folder, run 
 
 ```bash
-pip3 install . --prefix install
-source setup.sh # for some system, use . instead of source
+python3 setup.py install --prefix install
+. setup.sh # for some system, use . instead of source
 hk-pilot --help
 ```
 

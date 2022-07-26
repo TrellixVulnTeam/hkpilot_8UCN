@@ -4,6 +4,7 @@ import sys
 from urllib import request
 import yaml
 import zipfile
+import tarfile
 
 from hkpilot.utils.fancylogger import getLogger
 import importlib.util
@@ -71,14 +72,23 @@ def unzip(path_to_zip_file, where_to_unzip):
     if not os.path.exists(where_to_unzip):
         logger.warning("Directory where to unzip doesn't exist, creating it!")
         mkdir(where_to_unzip)
-    with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
-        zip_ref.extractall(where_to_unzip)
+    if path_to_zip_file.endswith(".zip"):
+        with zipfile.ZipFile(path_to_zip_file, 'r') as zip_ref:
+            zip_ref.extractall(where_to_unzip)
+    elif path_to_zip_file.endswith(".tar.gz"):
+        with tarfile.open(path_to_zip_file) as tar_ref:
+            tar_ref.extractall(where_to_unzip)
+    else:
+        logger.fatal("Unknown extension")
+        exit(1)
+
 
 
 def read_dependencies_file(path):
+    logger.debug(f"Defining additional dependencies from <{path}>")
     if not os.path.exists(path):
-        logger.fatal(f"Dependency path <{path}> doesn't exist; exiting!")
-        exit(1)
+        logger.warning(f"Dependency path <{path}> doesn't exist; exiting!")
+        return dict()
     if not os.path.exists(os.path.join(path, "dependencies.cmake")):
         logger.warn(f"Cannot find dependencies.cmake in <{path}>; skipping...")
         return dict()

@@ -1,5 +1,5 @@
 
-set( SET_INSTALL_PREFIX_TO_DEFAULT OFF CACHE BOOL "Reset default install path when when configuring" FORCE  )
+set( SET_INSTALL_PREFIX_TO_DEFAULT OFF CACHE BOOL "Reset default install path when configuring" FORCE  )
 include(PackageBuilder)
 
 
@@ -35,10 +35,9 @@ function ( hk_package NAME VERSION)
     # Parameters:
     #     NAME: package name
     #     VERSION: package version
-    #     PATH (optional):
 
+    MESSAGE("Dependeny package: ${NAME} version ${VERSION}")
     set (A_PATH "$ENV{HK_WORK_DIR}/${NAME}/install-$ENV{HK_SYSTEM}")
-    MESSAGE(STATUS ${A_PATH})
     set (CMAKE_FIND_FRAMEWORK "LAST")
     set (CMAKE_FIND_APPBUNDLE  "LAST")
     if("${VERSION}" STREQUAL "*")
@@ -46,15 +45,14 @@ function ( hk_package NAME VERSION)
         find_package( ${NAME} PATHS ${A_PATH} REQUIRED)
     else()
         message(STATUS "Version ${VERSION} required for ${NAME}")
-        find_package( ${NAME} PATHS ${A_PATH} VERSION ${VERSION} REQUIRED)
+        find_package( ${NAME} ${VERSION} EXACT PATHS ${A_PATH} REQUIRED)
     endif()
     if ( ${NAME}_FOUND )
-        message(STATUS "Found")
+        message(STATUS "Found ${NAME} version ${${NAME}_VERSION}")
     else()
         message(STATUS "${NAME} not found at ${A_PATH}")
     endif()
-
-    set (extra_args ${ARGN})
+    LIST(APPEND PUBLIC_EXT_LIBS ${${NAME}_LIBRARIES})
 
 endfunction(hk_package)
 

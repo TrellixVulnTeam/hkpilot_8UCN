@@ -2,7 +2,8 @@ repos:
   NEUT: git@github.com:hyperk/NEUT.git
   NGen: git@github.com:hyperk/NGen.git
   Geant4: git@github.com:hyperk/Geant4.git
-  WCSim: git@github.com:WCSim/WCSim.git
+  WCSim: git@github.com:guiguem/hk-WCSim.git
+  ROOT: git@github.com:guiguem/hk-ROOT.git
   fiTQun: git@github.com:hyperk/fiTQun.git
   hk-BONSAI: git@github.com:hyperk/hk-BONSAI.git
   hk-utils: git@github.com:hyperk/hk-utils.git
@@ -13,3 +14,4 @@ repos:
   sntools: git@github.com:JostMigenda/sntools.git
   TriggerApplication: git@github.com:HKDAQ/TriggerApplication.git
   zeromq: git@github.com:guiguem/zeromq.git
+  myhkdep: git@github.com:guiguem/myhkdep.git
