@@ -50,7 +50,11 @@ def find_commits_tags(path):
 
 def find_commit_info(path):
     git = Git(path)
-    desc = git.describe("--tags")
+    try:
+        desc = git.describe("--tags")
+    except GitCommandError as a:
+        logger.warn("Couldn't grab tags: setting version as 0.0.1")
+        desc = "v0.0.1"
     if len(desc.split('-')) == 1:
         version = desc
         repo = Repo(path)

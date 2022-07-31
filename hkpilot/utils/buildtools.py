@@ -94,8 +94,8 @@ class BuildTools(object):
         if not self._externals_src_dir:
             logger.warning("Didn't provide a clone directory: cloning/downloading into tar/src")
             self._externals_src_dir = "src"
-        if os.path.exists(os.path.join(self._path, self._externals_src_dir)):
-            logger.warning(f"Directory <{self._externals_src_dir}> already exists; cannot clone/download!")
+        if os.path.exists(os.path.join(self._path, self._cmakelist_path)):
+            logger.warning(f"Source directory <{self._cmakelist_path}> already exists; cannot clone/download!")
         elif self._git_url:
             logger.debug("Cloning...")
             self._repo = clone(self._git_url, os.path.join(self._path, self._externals_src_dir))

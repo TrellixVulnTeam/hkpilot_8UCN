@@ -26,18 +26,17 @@ def install_package(args):
     install_module_file = find_install_script(a_path)
     if install_module_file:
         logger.debug(f"Found non-empty install script: {install_module_file}")
-    install_obj = get_install_class(install_module_file)(a_path)
+    install_obj = get_install_class(install_module_file, args.name)(a_path)
     install_obj.check_dependencies()
+    install_obj.print()
     if args.recursive:
         logger.info("Running recursive installation")
         for key, value in install_obj._depends_on.items():
             recursive_args = args
             recursive_args.name = str(key)
-            print(recursive_args.name)
             if not install_package(recursive_args):
                 logger.error("Failed to install")
                 return False
-    install_obj.print()
     install_obj.n_procs = args.j if "j" in args else 0
     if not install_obj.download_source():
         logger.fatal("Error while downloading!")
@@ -47,6 +46,30 @@ def install_package(args):
     if not install_obj.build():
         return False
     if not install_obj.install():
+        return False
+    if not install_obj.post_install():
+        return False
+    return True
+
+
+def post_install_package(args):
+    a_path = os.path.join(os.environ.get("HK_WORK_DIR"), args.name)
+    logger.info(f"Installing {a_path}")
+    # First check if folder already exists
+    # If the folder doesn't exist, will try to grab it
+    if not os.path.exists(a_path):
+        logger.info(f"Package {a_path} doesn't exist; trying to clone")
+        git_url = find_git_url(args.name)
+        # find package in repos inventory
+        clone(git_url, a_path)
+    install_module_file = find_install_script(a_path)
+    if install_module_file:
+        logger.debug(f"Found non-empty install script: {install_module_file}")
+    install_obj = get_install_class(install_module_file, args.name)(a_path)
+    print(install_obj)
+    install_obj.check_dependencies()
+    install_obj.print()
+    if not install_obj.post_install():
         return False
     return True
 
@@ -95,6 +118,10 @@ def main():
     parser_install.add_argument('-j', type=int, help="Number of threads to use (default=3)", default=3)
     parser_install.add_argument('-r', '--recursive', action='store_true', help="Recursive installation")
     parser_install.set_defaults(func=install_package)
+
+    parser_install = sub_parsers.add_parser('post_install', help='Run post-installation of a package')
+    parser_install.add_argument('name', type=str, help='Package name/location')
+    parser_install.set_defaults(func=post_install_package)
 
     parser_clean = sub_parsers.add_parser('clean', help='Clean a package')
     parser_clean.add_argument('name', type=str, help='Package name/location')

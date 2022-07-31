@@ -1,5 +1,6 @@
 repos:
   NEUT: git@github.com:hyperk/NEUT.git
+  CLHEP: git@github.com:hyperk/CLHEP.git
   NGen: git@github.com:hyperk/NGen.git
   Geant4: git@github.com:hyperk/Geant4.git
   WCSim: git@github.com:guiguem/hk-WCSim.git

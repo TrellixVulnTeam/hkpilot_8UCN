@@ -28,15 +28,14 @@ def find_install_script(path):
     return os.path.join(path, "hkinstall.py")
 
 
-def get_install_class(file):
+def get_install_class(file, package_name):
     import imp
-    foo = imp.load_source('module', file)
+    foo = imp.load_source(f'module_{package_name}', file)
 
-    import module
-    for name, obj in inspect.getmembers(sys.modules['module']):
+    for name, obj in inspect.getmembers(sys.modules[f'module_{package_name}']):
         if inspect.isclass(obj):
             a_string = str(obj)
-            if "module." in a_string:
+            if f"module_{package_name}." in a_string:
                 logger.debug(f"Creating object of {name}")
                 return obj
     logger.fatal(f"Couldn't find class in {file}")
@@ -57,6 +56,8 @@ def find_git_url(name):
         if name in a_dict["repos"]:
             logger.debug(f"Found URL for {name}: {a_dict['repos'][name]}")
             return a_dict['repos'][name]
+    logger.debug("Couldn't find package in repos.yaml; trying to find it in hk org")
+    return f"git@github.com:hyperk/{name}.git"
 
 
 def download(url, path):
